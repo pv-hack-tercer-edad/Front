@@ -7,6 +7,12 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import "./globals.css";
+import { Inter } from "next/font/google"
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" className={`${inter.variable}`}>
         <body>
           <SignedOut>
             <SignInButton />
