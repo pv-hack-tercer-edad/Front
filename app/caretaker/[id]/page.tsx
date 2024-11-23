@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
   User,
-  FileText,
   Pill,
   Activity,
   Calendar,
@@ -45,7 +44,6 @@ type PatientDetails = {
   condition: string
   status: 'stable' | 'attention' | 'critical'
   imageUrl?: string
-  medicalHistory: string
   medications: Array<{
     name: string
     dosage: string
@@ -95,7 +93,6 @@ export default function PatientDetails() {
             condition: 'Hipertensión',
             status: 'stable',
             imageUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=200&h=200&auto=format&fit=crop',
-            medicalHistory: 'Paciente con hipertensión controlada...',
             medications: [
               {
                 name: 'Losartan',
@@ -178,7 +175,6 @@ export default function PatientDetails() {
             condition: 'Diabetes',
             status: 'attention',
             imageUrl: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=200&h=200&auto=format&fit=crop',
-            medicalHistory: 'Paciente con diabetes tipo 2...',
             medications: [
               {
                 name: 'Metformina',
@@ -358,13 +354,7 @@ export default function PatientDetails() {
                 <Activity className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Resumen</span>
               </TabsTrigger>
-              <TabsTrigger
-                value="history"
-                className="flex-1 sm:flex-none data-[state=active]:bg-blue-500 data-[state=active]:text-white"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Historial</span>
-              </TabsTrigger>
+
               <TabsTrigger
                 value="medications"
                 className="flex-1 sm:flex-none data-[state=active]:bg-blue-500 data-[state=active]:text-white"
@@ -508,14 +498,6 @@ export default function PatientDetails() {
                   </CardContent>
                 </Card>
               </div>
-            </TabsContent>
-
-            <TabsContent value="history" className="space-y-4 min-h-[300px]">
-              <Card className="border-0 shadow-lg glass-card p-4 sm:p-6">
-                <div className="prose prose-sm sm:prose max-w-none">
-                  {patient.medicalHistory}
-                </div>
-              </Card>
             </TabsContent>
 
             <TabsContent value="medications" className="space-y-4 min-h-[300px]">

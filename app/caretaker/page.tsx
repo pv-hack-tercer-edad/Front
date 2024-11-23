@@ -76,7 +76,7 @@ export default function CaretakerDashboard() {
   }
 
   return (
-    <ScrollArea className="h-screen w-full bg-gradient-to-b from-background via-background to-muted/50">
+    <ScrollArea className="h-screen w-full bg-gradient-to-b from-background/80 via-background/50 to-muted/30">
       <div className="container max-w-6xl mx-auto py-8 px-4">
         <div className="space-y-8">
           <div className="flex flex-col space-y-4">
@@ -99,7 +99,7 @@ export default function CaretakerDashboard() {
               <Card
                 key={patient.id}
                 onClick={() => handlePatientClick(patient.id)}
-                className="group hover:shadow-xl transition-all duration-300 border-muted-foreground/10 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50 cursor-pointer"
+                className="border-0 shadow-lg glass-card bg-card/50 backdrop-blur cursor-pointer"
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-4">
@@ -156,15 +156,17 @@ export default function CaretakerDashboard() {
           </div>
 
           {filteredPatients.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="rounded-full bg-blue-500/10 p-4 mb-4">
-                <User className="h-8 w-8 text-blue-500" />
-              </div>
-              <h3 className="text-lg font-semibold">No se encontraron pacientes</h3>
-              <p className="text-muted-foreground mt-1">
-                Intente con otros términos de búsqueda
-              </p>
-            </div>
+            <Card className="border-0 shadow-lg glass-card bg-card/50 backdrop-blur">
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="rounded-full bg-blue-500/10 p-4 mb-4">
+                  <User className="h-8 w-8 text-blue-500" />
+                </div>
+                <h3 className="text-lg font-semibold">No se encontraron pacientes</h3>
+                <p className="text-muted-foreground mt-1">
+                  Intente con otros términos de búsqueda
+                </p>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
