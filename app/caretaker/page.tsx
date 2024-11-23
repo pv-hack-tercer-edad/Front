@@ -1,64 +1,56 @@
 'use client'
 
 import { useState } from 'react'
-import { Users, Search, Filter, Plus, Calendar, Clock, MoreVertical } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Search, User, Clock, Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-// Types for our patient data
 type Patient = {
   id: string
   name: string
   age: number
   condition: string
-  status: 'stable' | 'attention' | 'critical'
-  lastChecked: string
+  lastCheckup: string
   nextCheckup: string
-  avatar?: string
+  status: 'stable' | 'attention' | 'critical'
+  imageUrl?: string
 }
 
 export default function CaretakerDashboard() {
-  // Mock data - replace with actual API call
-  const [patients] = useState<Patient[]>([
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // This would typically come from an API
+  const patients: Patient[] = [
     {
       id: '1',
-      name: 'María González',
+      name: 'Juan Pérez',
       age: 75,
       condition: 'Hipertensión',
-      status: 'stable',
-      lastChecked: '2h atrás',
-      nextCheckup: 'Hoy, 15:00',
+      lastCheckup: '2024-02-15',
+      nextCheckup: '2024-03-15',
+      status: 'stable'
     },
     {
       id: '2',
-      name: 'Juan Pérez',
+      name: 'María González',
       age: 82,
-      condition: 'Diabetes Tipo 2',
-      status: 'attention',
-      lastChecked: '5h atrás',
-      nextCheckup: 'Mañana, 10:00',
+      condition: 'Diabetes',
+      lastCheckup: '2024-02-10',
+      nextCheckup: '2024-03-01',
+      status: 'attention'
     },
-    {
-      id: '3',
-      name: 'Ana Silva',
-      age: 68,
-      condition: 'Artritis',
-      status: 'critical',
-      lastChecked: '1h atrás',
-      nextCheckup: 'Hoy, 18:00',
-    },
-  ])
+    // Add more patients as needed
+  ]
+
+  const filteredPatients = patients.filter(patient =>
+    patient.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const getStatusColor = (status: Patient['status']) => {
     switch (status) {
@@ -71,128 +63,78 @@ export default function CaretakerDashboard() {
     }
   }
 
-  const getStatusText = (status: Patient['status']) => {
-    switch (status) {
-      case 'stable':
-        return 'Estable'
-      case 'attention':
-        return 'Atención'
-      case 'critical':
-        return 'Crítico'
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
   }
 
   return (
     <ScrollArea className="h-screen w-full bg-gradient-to-b from-background to-muted">
-      <div className="container max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <Card className="border-0 shadow-xl bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
-          <CardHeader className="space-y-6 pb-8">
-            <div className="space-y-2">
-              <CardTitle className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent flex items-center gap-3">
-                <Users className="h-8 w-8 sm:h-10 sm:w-10" />
-                Mis Pacientes
-              </CardTitle>
-              <CardDescription className="text-sm sm:text-base text-muted-foreground">
-                Gestione y monitoree el estado de sus pacientes asignados
-              </CardDescription>
+      <div className="container max-w-6xl mx-auto py-8 px-4">
+        <div className="space-y-8">
+          <div className="flex flex-col space-y-4">
+            <h1 className="text-3xl font-bold text-primary">Mis Pacientes</h1>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar pacientes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
+          </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar pacientes..."
-                  className="pl-9 w-full"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" className="gap-2">
-                  <Filter className="h-4 w-4" />
-                  Filtrar
-                </Button>
-                <Button className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Nuevo Paciente
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
-              {patients.map((patient) => (
-                <div
-                  key={patient.id}
-                  className="group relative rounded-lg border p-4 hover:bg-accent transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex gap-4">
-                      <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
-                        <AvatarImage src={patient.avatar} />
-                        <AvatarFallback>
-                          {patient.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold leading-none">{patient.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {patient.age} años - {patient.condition}
-                        </p>
-                        <Badge
-                          variant="secondary"
-                          className={cn(
-                            "mt-2",
-                            getStatusColor(patient.status)
-                          )}
-                        >
-                          {getStatusText(patient.status)}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4">
-                      <div className="hidden sm:flex flex-col items-end gap-1">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          Última revisión: {patient.lastChecked}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          Próxima visita: {patient.nextCheckup}
-                        </div>
-                      </div>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-                          <DropdownMenuItem>Actualizar estado</DropdownMenuItem>
-                          <DropdownMenuItem>Historial médico</DropdownMenuItem>
-                          <DropdownMenuItem>Programar visita</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {filteredPatients.map((patient) => (
+              <Card
+                key={patient.id}
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => router.push(`/caretaker/${patient.id}`)}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={patient.imageUrl} alt={patient.name} />
+                      <AvatarFallback>
+                        <User className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <CardTitle className="text-lg">{patient.name}</CardTitle>
+                      <CardDescription>{patient.age} años</CardDescription>
                     </div>
                   </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Badge
+                    variant="secondary"
+                    className={cn("w-fit", getStatusColor(patient.status))}
+                  >
+                    {patient.condition}
+                  </Badge>
 
-                  <div className="sm:hidden mt-4 space-y-1">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                       <Clock className="h-4 w-4" />
-                      Última revisión: {patient.lastChecked}
+                      <span>Última visita:</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>{formatDate(patient.lastCheckup)}</span>
+
+                    <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="h-4 w-4" />
-                      Próxima visita: {patient.nextCheckup}
+                      <span>Próxima visita:</span>
                     </div>
+                    <span>{formatDate(patient.nextCheckup)}</span>
                   </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     </ScrollArea>
   )
