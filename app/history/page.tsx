@@ -7,9 +7,8 @@ import { CardContent } from "../components/card/CardContent";
 
 export default function PatientHistory() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="border-b bg-white">
+    <div className="flex justify-center bg-gray-50">
+      {/* <header className="border-b bg-white">
         <div className="container flex h-14 items-center px-4">
           <Button variant="ghost" size="icon" className="mr-3">
             <Menu className="h-5 w-5" />
@@ -18,27 +17,21 @@ export default function PatientHistory() {
             Historial de cuidados de Persona
           </h1>
         </div>
-      </header>
+      </header> */}
 
-      {/* Main Content */}
-      <main className="container p-4">
-        <div className="space-y-4">
-          {/* Medication Record */}
+      <main className="container">
+        <div className="space-y-4 pt-4">
           <PatientCard title="Azitromicina - 2cdas" timestamp="Hoy 9am" />
-
-          {/* Observation Record */}
           <PatientCard
             timestamp="Ayer 3pm"
             imageSrc="/placeholder.svg"
             imageAlt="Foto del paciente"
             description="Paciente se ve contento/1!"
           />
-
-          {/* Empty Record */}
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="pt-5">
               <div className="flex h-20 items-center justify-center rounded-lg border-2 border-dashed">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-xl text-muted-foreground">
                   Sin más registros
                 </span>
               </div>
@@ -79,19 +72,21 @@ function PatientCard({
 }) {
   return (
     <Card>
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="space-y-3 pt-5">
         <div className="flex items-center justify-between">
           {title && <span className="font-medium">{title}</span>}
-          <span className="text-sm text-muted-foreground">{timestamp}</span>
+          <span className="text-sm text-muted-foreground float-right">
+            {timestamp}
+          </span>
         </div>
         {imageSrc && imageAlt && (
           <div className="overflow-hidden rounded-lg border">
             <Image
               src={imageSrc}
               alt={imageAlt}
-              width={400}
-              height={300}
-              className="w-full object-cover"
+              width={200}
+              height={200}
+              className="object-cover"
             />
           </div>
         )}
